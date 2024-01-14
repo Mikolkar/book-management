@@ -6,15 +6,7 @@ class Command(BaseCommand):
     help = "Dodaje przykładowych znajomych do bazy danych"
 
     def handle(self, *args, **kwargs):
-        friends = [
-            {"name": "Jan Kowalski", "email": "jan.kowalski@example.com"},
-            {"name": "Anna Nowak", "email": "anna.nowak@example.com"},
-            {"name": "Piotr Wiśniewski", "email": "piotr.wisniewski@example.com"},
-            {"name": "Ewa Lewandowska", "email": "ewa.lewandowska@example.com"},
-            {"name": "Tomasz Dąbrowski", "email": "tomasz.dabrowski@example.com"},
-            {"name": "Agnieszka Kaczmarek", "email": "agnieszka.kaczmarek@example.com"},
-            {"name": "Marcin Zieliński", "email": "marcin.zielinski@example.com"},
-        ]
+        friends = Friend.objects.all()
 
         for friend in friends:
             # Checking if friend already exists

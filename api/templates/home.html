@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+<ul>
+    <li><a href="{% url 'books' %}">Books</a></li>
+    <li><a href="{% url 'add_book' %}">Add books</a></li>
+    <li><a href="{% url 'friends' %}">Friends</a></li>
+    <li><a href="{% url 'add_friend' %}">Add friends</a></li>
+    <li><a href="{% url 'borrows' %}">Borrows</a></li>
+    <li><a href="{% url 'borrow_book' %}">Borrow a book</a></li>
+    
+</ul>
+{% endblock %}

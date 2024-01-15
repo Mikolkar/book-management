@@ -8,25 +8,18 @@ class Command(BaseCommand):
         self.stdout.write(
             """
 add_book - Dodaje książkę do biblioteki, 
-wywołanie: add_book <tytuł> <autor> <rok>
+wywołanie: add_book <tytuł> <autor> <rok> / --api
 
 add_friend - Dodaje znajomego do biblioteki,
-wywołanie: add_friend <imię> <email>
+wywołanie: add_friend <imię> <email> / --api
 
 borrow - Wypożycza książkę znajomemu,
-wywołanie: borrow <id książki> <id znajomego>
+wywołanie: borrow <id książki> <id znajomego> / --api
 
-listbooks - Wyświetla listę wszystkich książek wraz z ich ID,
-wywołanie: listbooks
+list <books|friends|borrows> - Wyświetla listę książek, znajomych lub wypożyczeń,
 
-listborrows - Wyświetla listę wszystkich wypożyczeń wraz z ich ID,
-wywołanie: listborrows
-
-listfriends - Wyświetla listę wszystkich znajomych wraz z ich ID,
-wywołanie: listfriends
-
-remove_book - Usuwa książkę z biblioteki,
-wywołanie: remove_book <id książki>
+rm <book/friend> - Usuwa książkę z biblioteki,
+wywołanie: rm <book/friend> <id>  / --api
 
 return - Oznacza książkę jako zwróconą,
 wywołanie: return <id wypożyczenia>

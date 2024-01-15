@@ -17,26 +17,21 @@ class Command(BaseCommand):
         api_use = kwargs.get("api", False)
 
         if api_use:
-            # Wysyłanie żądania do API
             data={"book": book_id, "friend": friend_id}
-            # if serializer.is_valid():
             response = post_json("borrow_book/", data)
             if response.status_code == 200:
                 print(f"Book added successfully, data: {response.json()}")
             else:
                 print(f"Error: {response.status_code}")
-            # else:
-            #     print("yolo")
-            #     print(serializer.errors)
+
         else:
-            # Logika wypożyczania lokalnego
             try:
                 book = Book.objects.get(id=book_id)
                 friend = Friend.objects.get(id=friend_id)
 
                 borrow = Borrow(book=book, friend=friend)
                 try:
-                    borrow.clean()  # Możliwa walidacja
+                    borrow.clean()  
                     borrow.save()
                     self.stdout.write(
                         self.style.SUCCESS(

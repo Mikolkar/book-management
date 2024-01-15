@@ -3,6 +3,7 @@ from lib.models import *
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
+        id = serializers.IntegerField()
         model = Book
         fields = '__all__'
         
@@ -11,6 +12,7 @@ class FriendSerializer(serializers.ModelSerializer):
         model = Friend
         fields = '__all__'
         
+
 class BorrowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Borrow

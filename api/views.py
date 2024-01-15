@@ -15,6 +15,17 @@ def getBook(request):
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def getBorrow(request):
+    borrows = Borrow.objects.all()
+    serializer = BorrowSerializer(borrows, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getFriends(request):
+    friends = Friend.objects.all()
+    serializer = FriendSerializer(friends, many=True)
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def addBook(request):
@@ -31,16 +42,26 @@ def updateBook(request, pk):
         serializer.save()
     return Response(serializer.data)
 
+@api_view(['PUT'])
+def updateFriend(request, pk):
+    friend = Friend.objects.get(id=pk)
+    serializer = FriendSerializer(instance=friend, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
 @api_view(['DELETE'])
 def deleteBook(request, pk):
     book = Book.objects.get(id=pk)
+    serializer = BookSerializer(book, many=False)
     book.delete()
-    return Response('Książka została usunięta')
+    return Response(serializer.data)
 
-@api_view(['GET'])
-def getFriends(request):
-    friends = Friend.objects.all()
-    serializer = FriendSerializer(friends, many=True)
+@api_view(['DELETE'])
+def deleteFriend(request, pk):
+    friend = Friend.objects.get(id=pk)
+    serializer = FriendSerializer(friend, many=False)
+    friend.delete()
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -50,15 +71,10 @@ def addFriend(request):
         serializer.save()
     return Response(serializer.data)
 
-@api_view(['GET'])
-def getBorrow(request):
-    borrows = Borrow.objects.all()
-    serializer = BorrowSerializer(borrows, many=True)
-    return Response(serializer.data)
-
 @api_view(['POST'])
 def BorrowBook(request):
     serializer = BorrowSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+

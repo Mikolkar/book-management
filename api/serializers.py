@@ -14,6 +14,7 @@ class FriendSerializer(serializers.ModelSerializer):
         
 
 class BorrowSerializer(serializers.ModelSerializer):
+    borrow_date = serializers.DateField(format='%Y-%m-%d', input_formats=['%Y-%m-%d'])
     class Meta:
         model = Borrow
         fields = '__all__'

@@ -78,3 +78,11 @@ def BorrowBook(request):
         serializer.save()
     return Response(serializer.data)
 
+@api_view(['PUT'])
+def ReturnBook(request, pk):
+    borrow = Borrow.objects.get(id=pk)
+    serializer = BorrowSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+

@@ -22,6 +22,6 @@ rm <book/friend> - Usuwa książkę z biblioteki,
 wywołanie: rm <book/friend> <id>  / --api
 
 return - Oznacza książkę jako zwróconą,
-wywołanie: return <id wypożyczenia>
+wywołanie: return <id wypożyczenia> / --return_date=<date> / --api
     """
         )

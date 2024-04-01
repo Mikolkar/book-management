@@ -2,10 +2,11 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+
 # Create your models here.
 class Book(models.Model):
-    author = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
+    author = models.CharField(max_length=100)
     year = models.IntegerField()
 
     def __str__(self) -> str:

@@ -49,7 +49,7 @@ poetry run info
 ```
 ### API
 To use the API, add --api at the end of the command 
-but before you run the server:
+but before you need to run the server first.
     
 #### For example:
 ```shell

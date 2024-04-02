@@ -7,37 +7,55 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write(
             """
-To use the following commands, first of all, you need to
-write python mge.py or poetry run python manage.py before the command. 
-for example: python mge.py add_book "title" "author" "year"
+There are two ways to use these commands.
+1.  poetry run <command> <args>
+2.  Type once: poetry shell
+    and then you can use the commands without poetry run.
 
-To use the API, add --api at the end of the command. 
-for example: python mge.py add_book "title" "author" "year" --api
+for example: 
+    (1) poetry run add book "title" "author" "year"
+    
+    (2) poetry shell
+        add book "title" "author" "year"
 
-Before this you need to run the server.
-python mge.py runserver
+
+
+To use the API, add --api at the end of the command 
+but before you need to run the server:
+    
+for example: 
+    poetry run runserver
+    poetry run add book "title" "author" "year" --api
+
+
 
 Commands:
 
-add_book - Adds a book to the library,
-usage: add_book <title> <author> <year> / --api
+example_data - Adds example data to the database,
+    example_data
 
-add_friend - Adds a friend to the library,
-usage: add_friend <Name> <email> / --api
+add - Adds a book/friend to the library,
+    Book:
+        add book <title> <author> <year> / --api
+    Friend:
+        add friend <Name> <email> / --api
 
 borrow - Borrows a book for a friend,
-usage: borrow <book id> <friend id> / --api
+    borrow <book id> <friend id> / --api
 
 list - Lists of books, friends, or borrows,
-usage: list <books|friends|borrows> - Lists of books, friends, or borrows,
+    list <books/friends/borrows>
 
-rm <book/friend> - Removes a book or friend from the library,
-usage: rm <book/friend> <id> / --api
+remove - Removes a book or friend from the library,
+    rm <book/friend> <id> / --api
 
-return - Returns a borrowed book,
-usage: return <borrow id> / --return_date=<date> / --api
+returnB - Returns a borrowed book,
+    returnB <borrow id> / --return_date=<date> / --api
+
+update - Updates a book in the library,
+    update <book id> <title> <author> <year> / --api
 
 flush - Removes all data from the database,
-usage: flush
+    flush
     """
         )

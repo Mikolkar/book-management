@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "Simple book management program"
 authors = ["Mikolkar <mikolaj.karapka@gmail.com>"]
 license = "MIT"
+packages = [
+    { include = "scripts", from = "." }
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,5 +20,34 @@ requests = "^2.31.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+
 [tool.poetry.scripts]
-manage = "book_management.manage:main"
+# Info command
+info = "scripts.mge:info"
+
+# Add command
+add = "scripts.mge:add"
+
+# List command
+list = "scripts.mge:lst"
+
+# Run command
+runserver = "scripts.mge:runserver"
+
+# Borrow command
+borrow = "scripts.mge:borrow"
+
+# Return command
+returnB = "scripts.mge:ret"
+
+# Delete command
+remove = "scripts.mge:remove"
+
+# Example command
+example_data = "scripts.mge:example_data"
+
+# Flush command
+flush = "scripts.mge:flush"
+
+# Update command
+update = "scripts.mge:update"

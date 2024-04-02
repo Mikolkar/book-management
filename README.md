@@ -5,9 +5,13 @@ This is a **Python** program built using the **Django** framework. It provides f
 
 ## Video Demonstration - TO DO
 
-## Screenshots - TO DO
-
-## Features - TO DO
+## Features
+- Graphical Visualization
+- Editing Databases using ORM
+- Connecting to Server via API
+- Poetry Scripts
+- Data Validation
+- Remove Data From Database
 
 ## Installation
 
@@ -15,35 +19,46 @@ This is a **Python** program built using the **Django** framework. It provides f
 poetry install
 ```
 
+## Run
+To run the server, type:
+
+```shell
+poetry run runserver
+```
+
 ## Usage
-  #### To see all the commands and their usage patterns, simply type in the console:
+### There are two ways to use commands.
+1.  Type: ```poetry run <command> <args>```
+   
+2.  Type once: ``` poetry shell```
+    and then you can use the commands without ```poetry run```.
 
-    python mge.py info
-
-or
-
-
-    poetry run python manage.py info
-
-
-
- #### The program also features data visualization in graphical form. 
- To launch it, simply type:
-
+#### For example: 
+1. ```shell
+    poetry run add book "title" "author" "year"
+    ```
     
-    python mge.py runserver 
+2. ```shell
+    poetry shell
+    add book "title" "author" "year"
+    ```
+### Info
+To view a list of available commands and their usage, type:
+```shell
+poetry run info
+```
+### API
+To use the API, add --api at the end of the command 
+but before you run the server:
     
-or
+#### For example:
+```shell
+poetry run runserver
+poetry run add book "title" "author" "year" --api
+```
 
-    
-    poetry run python manage.py runserver
-    
-
-and navigate to the local website.
-
-
-#### You can also quick add to database some example data
-
-To launch it, simply type:
-
-    python mge.py example_data
+### Example data
+You can also quick add to database some example data. To launch it, simply type:
+```shell
+poetry run example_data
+```

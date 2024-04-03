@@ -3,7 +3,11 @@
 ## Description 
 This is a **Python** program built using the **Django** framework. It provides functionalities for managing books, including their borrowers and order history. Developed by **Mikołaj Karapka** for an **Advanced Python Programming** course, the application allows data population through either the **ORM** or an **API**.
 
-## Video Demonstration - TO DO
+## Video Demonstration
+
+
+https://github.com/Mikolkar/book-management/assets/118861101/2cd200c1-189d-4bd5-8941-2eb859936060
+
 
 ## Features
 - Graphical Visualization

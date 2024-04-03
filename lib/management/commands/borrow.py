@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand, CommandError
 from lib.models import Book, Friend, Borrow
-from api.api_utils import post_json  # Załóżmy, że masz funkcję post_json w api_utils
+from api.api_utils import post_json  
 from django.core.exceptions import ValidationError
 from api.serializers import BorrowSerializer
 from django.utils import timezone
+from lib.output import success
 
-
+@success
 class Command(BaseCommand):
     help = "Wypożycza książkę znajomemu"
 
@@ -27,7 +28,17 @@ class Command(BaseCommand):
             book = Book.objects.get(id=book_id)
             friend = Friend.objects.get(id=friend_id)
 
-            if api_use:
+            if not api_use:
+                borrow = Borrow(book=book, friend=friend)
+                try:
+                    borrow.clean()
+                    borrow.save()
+                    self.print_success(f'Book "{book.title}" has been borrowed to {friend.name}.')
+                    
+                except ValidationError as e:
+                    raise CommandError(f"Validation error {e}")
+
+            else:
                 serializer = BorrowSerializer(
                     data={
                         "book": book_id,
@@ -38,27 +49,20 @@ class Command(BaseCommand):
 
                 if serializer.is_valid():
                     response = post_json("borrow_book/", serializer.data)
-                    if response.status_code == 200:
-                        print(f"Book added successfully, data: {response.json()}")
-                    else:
-                        print(f"Error: {response.status_code}")
-                else:
-                    print(f"Serializer errors: {serializer.errors}")
 
-            else:
-                borrow = Borrow(book=book, friend=friend)
-                try:
-                    borrow.clean()
-                    borrow.save()
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f'Książka "{book.title}" została wypożyczona znajomemu {friend.name}.'
-                        )
-                    )
-                except ValidationError as e:
-                    raise CommandError(f"Błąd walidacji: {e}")
+                    if response.status_code == 200:
+                        resp = response.json()
+                        
+                        self.print_success(f"Book {book.title} (id {resp["book"]}) has been borrowed by {friend.name} ({resp["friend"]}) (API).")
+                        self.print_success(f"JSON response: {resp}")
+                        
+                    else:
+                        raise CommandError(f"Error: {response.status_code}")
+                else:
+                    raise CommandError(f"Serializer error: {serializer.errors}")
 
         except Book.DoesNotExist:
-            raise CommandError(f"Książka o ID {book_id} nie istnieje.")
+            raise CommandError(f"Book with ID {book_id} does not exist.")
+        
         except Friend.DoesNotExist:
-            raise CommandError(f"Znajomy o ID {friend_id} nie istnieje.")
+            raise CommandError(f"Friend with ID {friend_id} does not exist.")

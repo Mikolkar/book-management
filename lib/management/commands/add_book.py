@@ -2,8 +2,10 @@ from django.core.management.base import BaseCommand
 from lib.models import Book
 from api.api_utils import *
 from api.serializers import BookSerializer
+from lib.output import success
 
 
+@success
 class Command(BaseCommand):
     help = "Adds a book to the library"
 
@@ -20,21 +22,29 @@ class Command(BaseCommand):
         api_use = kwargs["api"]
 
         if not api_use:
-            Book.objects.create(title=title, author=author, year=year)
-            self.stdout.write(
-                self.style.SUCCESS(f"Książka {title} dodana do bazy danych")
-            )
+            if not Book.objects.filter(title=title, author=author, year=year).exists():
+                Book.objects.create(title=title, author=author, year=year)
 
+                self.print_success(f"Book {title} has been added to the database.")
+            else:
+                raise CommandError(f"Book {title} already exists in the database.")
+
+        # Adding book by API
         else:
             serializer = BookSerializer(
                 data={"title": title, "author": author, "year": year}
             )
+
             if serializer.is_valid():
                 response = post_json("add_book/", serializer.data)
+
                 if response.status_code == 200:
-                    print(f"Książka dodana do bazy danych, data: {response.json()}")
+                    self.print_success(
+                        f"Book {response.json()['title']} (id: {response.json()['id']}) has been added to the database by API."
+                    )
+                    self.print_success(f"JSON response: {response.json()}")
                 else:
-                    print(f"Error: {response.status_code}")
+                    raise CommandError(f"Error: {response.status_code}")
 
             else:
                 return serializer.errors, 400

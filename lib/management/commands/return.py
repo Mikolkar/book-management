@@ -4,8 +4,10 @@ from django.utils import timezone
 import datetime
 from api.serializers import BorrowSerializer
 from api.api_utils import put_json
+from lib.output import success
 
 
+@success
 class Command(BaseCommand):
     help = "Oznacza książkę jako zwróconą"
 
@@ -25,17 +27,20 @@ class Command(BaseCommand):
         api_use = kwargs["api"]
         try:
             borrow = Borrow.objects.get(id=borrow_id)
+
+            # Not using API
             if not api_use:
+
                 borrow.return_date = datetime.datetime.strptime(
                     return_date, "%Y-%m-%d"
                 ).date()
                 borrow.save()
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f'Książka "{borrow.book.title}" zwrócona dnia {borrow.return_date}'
-                    )
+
+                self.print_success(
+                    f'Book "{borrow.book.title}" returned on {borrow.return_date}'
                 )
 
+            # Using API
             else:
                 return_date = (
                     datetime.datetime.strptime(return_date, "%Y-%m-%d")
@@ -44,15 +49,17 @@ class Command(BaseCommand):
                 )
                 data = {"return_date": return_date}
                 api_url = f"return_book/{borrow_id}/"
+
                 response = put_json(api_url, data)
 
                 if response.status_code == 200:
-                    print("Książka zwrócona pomyślnie.")
-                    print(response.json())
+                    self.print_success(
+                        f'Book "{borrow.book.title}" returned successfully (API).'
+                    )
+                    self.print_success(f"JSON response: {response.json()}")
+
                 else:
-                    print(f"Błąd: {response.status_code}")
+                    raise CommandError(f"Error: {response.status_code}")
 
         except Borrow.DoesNotExist:
-            self.stdout.write(
-                self.style.ERROR(f"Wypożyczenie o ID {borrow_id} nie istnieje.")
-            )
+            raise CommandError(f"Borrow with ID {borrow_id} does not exist.")

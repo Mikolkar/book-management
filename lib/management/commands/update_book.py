@@ -2,8 +2,10 @@ from django.core.management.base import BaseCommand
 from lib.models import Book
 from api.serializers import BookSerializer
 from api.api_utils import put_json
+from lib.output import success
 
 
+@success
 class Command(BaseCommand):
     help = "Aktualizuje książkę w bibliotece na podstawie ID"
 
@@ -28,14 +30,12 @@ class Command(BaseCommand):
                 book.title = title
                 book.year = year
                 book.save()
-                self.stdout.write(
-                    self.style.SUCCESS(f"Książka {title} zaktualizowana ")
-                )
-            except Book.DoesNotExist:
-                self.stdout.write(
-                    self.style.ERROR(f"Książka o ID {book_id} nie istnieje.")
-                )
+                self.print_success(f"Book {title} has been updated successfully.")
 
+            except Book.DoesNotExist:
+                raise CommandError(f"Book with ID {book_id} does not exist.")
+
+        # Using API
         else:
             serializer = BookSerializer(
                 data={"title": title, "author": author, "year": year}
@@ -45,8 +45,10 @@ class Command(BaseCommand):
                 response = put_json(f"update_book/{book_id}/", serialized_data)
 
                 if response.status_code == 200:
-                    print(f"Book updated successfully, data: {response.json()}")
+                    self.print_success(f"Book {response.json()["title"]} (id: {book_id}) has been updated in the database by API.")
+                    self.print_success(f"JSON response: {response.json()}")
+                    
                 else:
-                    print(f"Error: {response.status_code}")
+                    raise CommandError(f"Error: {response.status_code}")
             else:
-                print(serializer.errors)
+                raise CommandError(f"Serializer errors: {serializer.errors}")

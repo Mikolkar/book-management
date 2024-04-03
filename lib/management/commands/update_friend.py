@@ -2,7 +2,10 @@ from django.core.management.base import BaseCommand
 from lib.models import Friend
 from api.serializers import FriendSerializer
 from api.api_utils import put_json
+from lib.output import success
 
+
+@success
 class Command(BaseCommand):
     help = "Aktualizuje dane znajomego w bazie danych"
 
@@ -24,10 +27,12 @@ class Command(BaseCommand):
                 friend.name = name
                 friend.email = email
                 friend.save()
-                self.stdout.write(self.style.SUCCESS(f"Dane znajomego {name} zostały zaktualizowane."))
-            except Friend.DoesNotExist:
-                self.stdout.write(self.style.ERROR(f"Znajomy o ID {friend_id} nie istnieje."))
+                self.print_success(f"Friend {name}'s information has been updated.")
 
+            except Friend.DoesNotExist:
+                raise CommandError(f"Friend with ID {friend_id} does not exist.")
+
+        # Using API
         else:
             serializer = FriendSerializer(data={"name": name, "email": email})
             if serializer.is_valid():
@@ -35,8 +40,12 @@ class Command(BaseCommand):
                 response = put_json(f"update_friend/{friend_id}/", serialized_data)
 
                 if response.status_code == 200:
-                    print(f"Dane znajomego zostały zaktualizowane, data: {response.json()}")
+                    self.print_success(
+                        f"Friend {response.json()['name']} (id: {response.json()['id']}) has been updated in the database by API."
+                    )
+                    self.print_success(f"JSON response: {response.json()}")
+
                 else:
-                    print(f"Błąd: {response.status_code}")
+                    raise CommandError(f"Error: {response.status_code}")
             else:
-                print(serializer.errors)
+                raise CommandError(f"Serializer errors: {serializer.errors}")

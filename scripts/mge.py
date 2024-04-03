@@ -112,7 +112,10 @@ def add():
 # Returning list of books, friends or borrows
 def lst():
     args = sys.argv[1:]
-    run(["poetry", "run", "python", "./manage.py", "list", args[0]])
+    if args[-1] == "--api":
+        run(["poetry", "run", "python", "./manage.py", "list", args[0], "--api"])
+    else:
+        run(["poetry", "run", "python", "./manage.py", "list", args[0]])
 
 
 # Running the server

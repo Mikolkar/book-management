@@ -3,35 +3,52 @@ from lib.models import Book, Friend, Borrow
 from api.api_utils import post_json  # Załóżmy, że masz funkcję post_json w api_utils
 from django.core.exceptions import ValidationError
 from api.serializers import BorrowSerializer
+from django.utils import timezone
+
+
 class Command(BaseCommand):
     help = "Wypożycza książkę znajomemu"
 
     def add_arguments(self, parser):
         parser.add_argument("book", type=int, help="ID książki do wypożyczenia")
-        parser.add_argument("friend", type=int, help="ID znajomego, który wypożycza książkę")
-        parser.add_argument("--api", action="store_true", help="Użyj API do wypożyczenia książki")
+        parser.add_argument(
+            "friend", type=int, help="ID znajomego, który wypożycza książkę"
+        )
+        parser.add_argument(
+            "--api", action="store_true", help="Użyj API do wypożyczenia książki"
+        )
 
     def handle(self, *args, **kwargs):
         book_id = kwargs["book"]
         friend_id = kwargs["friend"]
         api_use = kwargs.get("api", False)
 
-        if api_use:
-            data={"book": book_id, "friend": friend_id}
-            response = post_json("borrow_book/", data)
-            if response.status_code == 200:
-                print(f"Book added successfully, data: {response.json()}")
+        try:
+            book = Book.objects.get(id=book_id)
+            friend = Friend.objects.get(id=friend_id)
+
+            if api_use:
+                serializer = BorrowSerializer(
+                    data={
+                        "book": book_id,
+                        "friend": friend_id,
+                        "borrow_date": timezone.now().strftime("%Y-%m-%d"),
+                    }
+                )
+
+                if serializer.is_valid():
+                    response = post_json("borrow_book/", serializer.data)
+                    if response.status_code == 200:
+                        print(f"Book added successfully, data: {response.json()}")
+                    else:
+                        print(f"Error: {response.status_code}")
+                else:
+                    print(f"Serializer errors: {serializer.errors}")
+
             else:
-                print(f"Error: {response.status_code}")
-
-        else:
-            try:
-                book = Book.objects.get(id=book_id)
-                friend = Friend.objects.get(id=friend_id)
-
                 borrow = Borrow(book=book, friend=friend)
                 try:
-                    borrow.clean()  
+                    borrow.clean()
                     borrow.save()
                     self.stdout.write(
                         self.style.SUCCESS(
@@ -41,7 +58,7 @@ class Command(BaseCommand):
                 except ValidationError as e:
                     raise CommandError(f"Błąd walidacji: {e}")
 
-            except Book.DoesNotExist:
-                raise CommandError(f"Książka o ID {book_id} nie istnieje.")
-            except Friend.DoesNotExist:
-                raise CommandError(f"Znajomy o ID {friend_id} nie istnieje.")
+        except Book.DoesNotExist:
+            raise CommandError(f"Książka o ID {book_id} nie istnieje.")
+        except Friend.DoesNotExist:
+            raise CommandError(f"Znajomy o ID {friend_id} nie istnieje.")

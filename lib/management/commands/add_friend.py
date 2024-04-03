@@ -3,6 +3,7 @@ from lib.models import Friend
 from api.api_utils import *
 from api.serializers import FriendSerializer
 
+
 class Command(BaseCommand):
     help = "Dodaje nowego znajomego do bazy danych"
 
@@ -19,15 +20,17 @@ class Command(BaseCommand):
         name = kwargs["name"]
         email = kwargs["email"]
         api_use = kwargs["api"]
-        
+
         # Checking if friend already exists
         if not api_use:
+            print("Using local database")
             if not Friend.objects.filter(email=email).exists():
                 Friend.objects.create(name=name, email=email)
                 self.stdout.write(self.style.SUCCESS(f"Dodano znajomego: {name}"))
             else:
                 self.stdout.write(
-                    self.style.WARNING(f"Znajomy {name} już istnieje w bazie danych."))
+                    self.style.WARNING(f"Znajomy {name} już istnieje w bazie danych.")
+                )
         else:
             serializer = FriendSerializer(data={"name": name, "email": email})
             if serializer.is_valid():

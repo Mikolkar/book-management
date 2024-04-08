@@ -51,9 +51,8 @@ To view a list of available commands and their usage, type:
 ```shell
 poetry run info
 ```
-### API
-To use the API, add --api at the end of the command 
-but before you need to run the server first.
+### REST API
+To use the **REST API**, run the server first. Then, you can add --api to the end of the command.
     
 #### For example:
 ```shell

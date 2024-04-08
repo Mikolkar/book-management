@@ -39,12 +39,12 @@ poetry run runserver
 
 #### For example: 
 1. ```shell
-    poetry run add book "title" "author" "year"
+    poetry run add book "title" "author" 2024
     ```
     
 2. ```shell
     poetry shell
-    add book "title" "author" "year"
+    add book "title" "author" 2024
     ```
 ### Info
 To view a list of available commands and their usage, type:
@@ -57,7 +57,7 @@ To use the **REST API**, run the server first. Then, you can add --api to the en
 #### For example:
 ```shell
 poetry run runserver
-poetry run add book "title" "author" "year" --api
+poetry run add book "title" "author" 2024 --api
 ```
 
 ### Example data

@@ -1,7 +1,7 @@
 # Book Management
 
 ## Description 
-This is a **Python** program built using the **Django** framework. It provides functionalities for managing books, including their borrowers and order history. Developed by **Mikołaj Karapka** for an **Advanced Python Programming** course. The program uses **Django ORM** for data management, which allows data to be saved either **directly** to the database or through an **API**.
+This is a **Python** program developed using the **Django** and **Django REST framework**. It provides functionalities for managing books, including their borrowers and order history. Developed by **Mikołaj Karapka** for an **Advanced Python Programming** course. The program uses **Django ORM** for data management, which allows data to be saved either **directly** to the database or through an **REST API**.
 
 ## Video Demonstration
 
